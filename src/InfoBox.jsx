@@ -5,6 +5,9 @@ import CardMedia from '@mui/material/CardMedia';
 
 import Typography from '@mui/material/Typography';
 import "./InfoBox.css";
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import SunnyIcon from '@mui/icons-material/Sunny';
+import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 
 export default function InfoBox({info}) {
 
@@ -13,7 +16,8 @@ export default function InfoBox({info}) {
     let Cold_Url="https://www.shutterstock.com/image-vector/freezing-boy-suffering-snowy-cold-600nw-2397810809.jpg";
     let Hot_Url="https://img.freepik.com/free-vector/flat-summer-heat-illustration-with-man-sweating-sun_23-2149433187.jpg?semt=ais_hybrid&w=740&q=80";
     let Rain_Url="https://thumbs.dreamstime.com/z/rainy-weather-icon-clouds-umbrella-24120412.jpg";
-
+    
+  
 
     return (
         <div className="InfoBox">
@@ -22,12 +26,24 @@ export default function InfoBox({info}) {
             <Card sx={{ maxWidth: 345 }}>
                 <CardMedia
                     sx={{ height: 140 }}
-                    image={Init_Url}
+                    image={
+                        info.humidity > 95
+                        ? Rain_Url
+                        : info.temp > 25
+                        ? Hot_Url
+                        : Cold_Url
+                    }
                     title="green iguana"
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        {info.city}
+                        {info.city} {
+                        info.humidity > 95
+                        ? <ThunderstormIcon/>
+                        : info.temp > 25
+                        ? <SunnyIcon/>
+                        : <AcUnitIcon/>
+                    }
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }} component={"span"}>
                         <p>Temperature = {info.temp} &deg;C</p>
