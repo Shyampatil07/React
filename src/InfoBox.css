@@ -1,7 +1,9 @@
 .InfoBox{
     text-align: center;
+     /* margin-left: 600px; */
 }
 .cardCon{
     display: flex;
     justify-content: center;
+   
 }
