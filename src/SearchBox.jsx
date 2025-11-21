@@ -3,17 +3,21 @@ import Button from"@mui/material/Button";
 import "./SearchBox.css";
 import { useState } from "react";
 
-export default function SearchBox(){
+export default function SearchBox({ updateInfo }){
     let [city, setCity] = useState("");
+    let [err, setErr] = useState(false);
+
     const API_URL = "https://api.openweathermap.org/data/2.5/weather";
     const API_KEY = "7c0493f9a663f65df979f64fbbf22ca0";
 
 
     let getWeatherInfo = async () =>{
-        let response = await fetch(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
+        try {
+           let response = await fetch(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
         let jsonResponse = await response.json();
        
         let result = {
+            city: city,
             temp: jsonResponse.main.temp,
             tempMin: jsonResponse.main.temp_min,
             tempMax: jsonResponse.main.temp_max,
@@ -22,23 +26,32 @@ export default function SearchBox(){
             weather: jsonResponse.weather[0].description,
         };
         console.log(result);
+        return result; 
+        } catch (error) {
+           throw error;
+        } 
     };
-   
 
     let handleChange = (evt) => {
         setCity(evt.target.value);
     };
 
-    let handleSubmit = (evt) => {
-        evt.preventDefault();
+    let handleSubmit = async(evt) => {
+        try {
+            evt.preventDefault();
         console.log(city);
         setCity("");
-        getWeatherInfo();
+        let newInfo = await getWeatherInfo();
+        updateInfo(newInfo);
+        } catch (error) {
+             setErr(true);
+        }
+        
     };
 
     return(
         <div className="SearchBox">
-            <h3>Search for the weather</h3>
+            
             <form onSubmit={handleSubmit}>
                 <TextField 
                 id="city"
@@ -51,6 +64,7 @@ export default function SearchBox(){
                 <br></br>
                 <br></br>
                 <Button variant="contained" type="submit">Search</Button>
+                {err && <p style={{color:"red"}}>No such place exists</p>}
             </form>
         </div>
     );
